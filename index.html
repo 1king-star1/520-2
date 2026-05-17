@@ -117,18 +117,20 @@
 
         .love-quote {
             position: absolute;
-            font-size: clamp(0.8rem, 2.5vw, 1.0rem);
+            font-size: clamp(0.65rem, 2.8vw, 1.0rem);
             font-weight: 600;
             background: linear-gradient(135deg, #ff6b9d 0%, #ff4b7a 30%, #ffc0cb 50%, #dda0dd 70%, #ff6b9d 100%);
             background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.1em;
             text-shadow: 0 0 30px rgba(255, 75, 122, 0.9), 0 0 60px rgba(255, 107, 157, 0.6), 0 0 100px rgba(221, 160, 221, 0.4);
             opacity: 0;
             pointer-events: none;
-            white-space: nowrap;
+            white-space: normal;
+            max-width: 85%;
+            text-align: center;
             z-index: 20;
             animation: quoteFloat 4s ease-in-out infinite, quoteGlow 2s ease-in-out infinite, quoteGradient 3s ease infinite;
         }
@@ -238,11 +240,11 @@
         <div class="text-container" id="textContainer">
             <div class="title">520</div>
             <div class="subtitle">我爱你</div>
-            <div class="hint" id="hint">点击屏幕开始心动...</div>
+            <div class="hint" id="hint">点屏幕有惊喜...</div>
         </div>
 
         <div class="love-text" id="loveText">
-            ❤️ 遇见你，是我最美的意外 ❤️
+            ❤️ 大笨蛋，遇见你是我最美的意外 ❤️
         </div>
 
         <div class="controls">
@@ -278,7 +280,8 @@
                 replaceInterval: 1500,
                 fadeOutDuration: 1500,
                 bloomDuration: 3000,
-                replaceStartDelay: 5000
+                replaceStartDelay: 5000,
+                loopInterval: 4000
             },
             animation: {
                 duration: 52100,
@@ -497,6 +500,8 @@
                 this.lightPhase = Math.random() * Math.PI * 2;
                 this.fadeOut = false;
                 this.fadeOutPhase = 0;
+                this.bloomCyclePhase = 0;
+                this.isLooping = false;
             }
 
             update(elapsed, windOffset) {
@@ -506,11 +511,28 @@
 
                 const bloomDelay = CONFIG.animation.bloomDelay;
                 const bloomDuration = CONFIG.rose.bloomDuration;
+                const loopInterval = CONFIG.rose.loopInterval;
 
                 if (!this.fadeOut) {
                     if (elapsed > bloomDelay) {
                         const bloomElapsed = elapsed - bloomDelay;
-                        this.bloomPhase = Math.min(1, bloomElapsed / bloomDuration);
+                        
+                        if (bloomElapsed > bloomDuration + 2000) {
+                            this.isLooping = true;
+                        }
+                        
+                        if (this.isLooping) {
+                            const cycleElapsed = bloomElapsed - bloomDuration - 2000;
+                            this.bloomCyclePhase = (cycleElapsed % loopInterval) / loopInterval;
+                            
+                            if (this.bloomCyclePhase < 0.5) {
+                                this.bloomPhase = 0.3 + this.bloomCyclePhase * 1.4;
+                            } else {
+                                this.bloomPhase = 1 - (this.bloomCyclePhase - 0.5) * 1.4;
+                            }
+                        } else {
+                            this.bloomPhase = Math.min(1, bloomElapsed / bloomDuration);
+                        }
                     }
                 } else {
                     this.fadeOutPhase += 0.015;
@@ -1396,58 +1418,73 @@
             }
             
             getNonOverlappingPosition() {
-                const padding = 60;
-                const maxAttempts = 50;
-                const quoteWidth = 350;
-                const quoteHeight = 50;
-                
                 const screenH = window.innerHeight;
                 const screenW = window.innerWidth;
                 
-                const safePadding = 100;
+                const isMobileDevice = screenW < 768;
+                const padding = isMobileDevice ? 20 : 60;
+                const maxAttempts = 100;
+                const quoteWidth = isMobileDevice ? screenW - padding * 2 : 350;
+                const quoteHeight = isMobileDevice ? 45 : 50;
                 
                 const forbiddenZones = [
-                    { x: screenW * 0.30, y: screenH * 0.28, w: screenW * 0.40, h: screenH * 0.25 },
-                    { x: screenW * 0.35, y: screenH * 0.52, w: screenW * 0.30, h: screenH * 0.08 },
-                    { x: screenW * 0.20, y: screenH * 0.80, w: screenW * 0.60, h: screenH * 0.18 }
+                    { x: screenW * 0.25, y: screenH * 0.25, w: screenW * 0.50, h: screenH * 0.30 },
+                    { x: screenW * 0.30, y: screenH * 0.50, w: screenW * 0.40, h: screenH * 0.12 },
+                    { x: screenW * 0.15, y: screenH * 0.75, w: screenW * 0.70, h: screenH * 0.22 }
                 ];
                 
                 const isInForbiddenZone = (x, y) => {
                     for (const zone of forbiddenZones) {
-                        if (x < zone.x + zone.w && x + quoteWidth > zone.x &&
-                            y < zone.y + zone.h && y + quoteHeight > zone.y) {
+                        const margin = 20;
+                        if (x + margin < zone.x + zone.w && x + quoteWidth - margin > zone.x &&
+                            y + margin < zone.y + zone.h && y + quoteHeight - margin > zone.y) {
                             return true;
                         }
                     }
                     return false;
                 };
                 
-                const preferredZones = [
-                    { x: padding, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
-                    { x: screenW * 0.60, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
-                    { x: padding, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 },
-                    { x: screenW * 0.60, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 }
-                ];
+                let preferredZones;
+                if (isMobileDevice) {
+                    preferredZones = [
+                        { x: padding, y: padding, w: screenW - padding * 2, h: screenH * 0.20 },
+                        { x: padding, y: screenH * 0.35, w: screenW - padding * 2, h: screenH * 0.15 },
+                        { x: padding, y: screenH * 0.55, w: screenW - padding * 2, h: screenH * 0.15 }
+                    ];
+                } else {
+                    preferredZones = [
+                        { x: padding, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
+                        { x: screenW * 0.60, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
+                        { x: padding, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 },
+                        { x: screenW * 0.60, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 }
+                    ];
+                }
                 
                 const getPositionFromZone = (zone) => {
+                    const availableWidth = Math.max(0, zone.w - quoteWidth);
+                    const availableHeight = Math.max(0, zone.h - quoteHeight);
                     return {
-                        x: zone.x + Math.random() * (zone.w - quoteWidth),
-                        y: zone.y + Math.random() * (zone.h - quoteHeight)
+                        x: zone.x + (availableWidth > 0 ? Math.random() * availableWidth : 0),
+                        y: zone.y + (availableHeight > 0 ? Math.random() * availableHeight : 0)
                     };
                 };
                 
                 for (let i = 0; i < maxAttempts; i++) {
                     const zone = preferredZones[Math.floor(Math.random() * preferredZones.length)];
-                    let x = zone.x + Math.random() * (zone.w - quoteWidth);
-                    let y = zone.y + Math.random() * (zone.h - quoteHeight);
+                    const pos = getPositionFromZone(zone);
+                    const x = pos.x;
+                    const y = pos.y;
                     
                     if (isInForbiddenZone(x, y)) continue;
                     
                     let overlap = false;
+                    const minDistanceX = quoteWidth + 15;
+                    const minDistanceY = quoteHeight + 20;
+                    
                     for (const pos of this.quotePositions) {
                         const dx = Math.abs(x - pos.x);
                         const dy = Math.abs(y - pos.y);
-                        if (dx < quoteWidth && dy < quoteHeight * 2) {
+                        if (dx < minDistanceX && dy < minDistanceY) {
                             overlap = true;
                             break;
                         }
@@ -1458,8 +1495,8 @@
                     }
                 }
                 
-                const zone = preferredZones[Math.floor(Math.random() * preferredZones.length)];
-                return getPositionFromZone(zone);
+                const fallbackZone = preferredZones[Math.floor(Math.random() * preferredZones.length)];
+                return getPositionFromZone(fallbackZone);
             }
             
             showLoveQuote(text) {
