@@ -298,6 +298,7 @@
         if (isMobile) {
             CONFIG.particle.count = Math.floor(CONFIG.particle.count * 0.6);
             CONFIG.particle.poolSize = Math.floor(CONFIG.particle.poolSize * 0.6);
+            CONFIG.animation.autoClickInterval = 1500;
         }
 
         // ========== 粒子对象池 ==========
@@ -1199,13 +1200,14 @@
                 const x = isAuto ? Math.random() * this.canvas.width : (e.clientX - rect.left);
                 const y = isAuto ? Math.random() * this.canvas.height : (e.clientY - rect.top);
                 
-                for (let i = 0; i < 25; i++) {
+                const fireworkCount = isMobile ? 12 : 25;
+                for (let i = 0; i < fireworkCount; i++) {
                     this.fireworks.push(new FireworkHeart(x, y));
                 }
                 
                 this.ripples.push(new ClickRipple(x, y));
                 
-                this.shakeAmount = 3;
+                this.shakeAmount = isMobile ? 1.2 : 3;
                 
                 this.audioManager.init();
                 
