@@ -188,10 +188,10 @@
 
         .love-text {
             position: absolute;
-            bottom: 20%;
+            bottom: 35%;
             left: 50%;
             transform: translateX(-50%);
-            font-size: clamp(1rem, 3vw, 1.6rem);
+            font-size: clamp(1.2rem, 4vw, 2rem);
             color: rgba(255, 107, 157, 0);
             opacity: 0;
             white-space: nowrap;
@@ -2224,29 +2224,41 @@
                         y += verticalGap;
                     }
                     
-                    const lastPos = this.quotePositions.length > 0 ? this.quotePositions[this.quotePositions.length - 1] : null;
                     let availableIndices = [];
                     
                     for (let i = 0; i < fixedPositions.length; i++) {
-                        if (!lastPos) {
-                            availableIndices.push(i);
-                        } else {
-                            const lastIndex = fixedPositions.indexOf(lastPos.y);
-                            if (lastIndex === -1) {
-                                availableIndices.push(i);
-                            } else if (Math.abs(i - lastIndex) >= 5) {
-                                availableIndices.push(i);
+                        const posY = fixedPositions[i];
+                        let isFarEnough = true;
+                        
+                        for (const pos of this.quotePositions) {
+                            const posIndex = fixedPositions.indexOf(pos.y);
+                            if (posIndex !== -1 && Math.abs(i - posIndex) < 3) {
+                                isFarEnough = false;
+                                break;
                             }
+                        }
+                        
+                        if (isFarEnough) {
+                            availableIndices.push(i);
                         }
                     }
                     
                     if (availableIndices.length === 0) {
                         for (let i = 0; i < fixedPositions.length; i++) {
-                            if (!lastPos || Math.abs(i - fixedPositions.indexOf(lastPos.y)) >= 3) {
+                            let isFarEnough = true;
+                            for (const pos of this.quotePositions) {
+                                const posIndex = fixedPositions.indexOf(pos.y);
+                                if (posIndex !== -1 && Math.abs(i - posIndex) < 2) {
+                                    isFarEnough = false;
+                                    break;
+                                }
+                            }
+                            if (isFarEnough) {
                                 availableIndices.push(i);
                             }
                         }
                     }
+                    
                     if (availableIndices.length === 0) {
                         availableIndices = Array.from({ length: fixedPositions.length }, (_, i) => i);
                     }
