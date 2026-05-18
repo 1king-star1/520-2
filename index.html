@@ -137,8 +137,7 @@
             text-shadow: 0 0 30px rgba(255, 183, 71, 0.9), 0 0 60px rgba(255, 140, 0, 0.6), 0 0 100px rgba(255, 215, 0, 0.4);
             opacity: 0;
             pointer-events: none;
-            white-space: normal;
-            max-width: 85%;
+            white-space: nowrap;
             text-align: center;
             z-index: 20;
             animation: quoteFloat 4s ease-in-out infinite, quoteGlow 2s ease-in-out infinite, quoteGradient 3s ease infinite;
@@ -552,6 +551,23 @@
         @keyframes rotate3d {
             0% { transform: rotateY(0deg); }
             100% { transform: rotateY(360deg); }
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .carousel-container {
+                width: 180px;
+                height: 180px;
+            }
+            .carousel-item {
+                width: 120px;
+                height: 120px;
+            }
+            .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(180px); }
+            .carousel-item:nth-child(2) { transform: rotateY(72deg) translateZ(180px); }
+            .carousel-item:nth-child(3) { transform: rotateY(144deg) translateZ(180px); }
+            .carousel-item:nth-child(4) { transform: rotateY(216deg) translateZ(180px); }
+            .carousel-item:nth-child(5) { transform: rotateY(288deg) translateZ(180px); }
         }
     </style>
 </head>
@@ -2192,10 +2208,10 @@
                 const screenW = window.innerWidth;
                 
                 const isMobileDevice = screenW < 768;
-                const padding = isMobileDevice ? 20 : 60;
-                const maxAttempts = 100;
+                const padding = isMobileDevice ? 15 : 60;
+                const maxAttempts = 150;
                 const quoteWidth = isMobileDevice ? screenW - padding * 2 : 350;
-                const quoteHeight = isMobileDevice ? 45 : 50;
+                const quoteHeight = isMobileDevice ? 30 : 50;
                 
                 const forbiddenZones = [
                     { x: screenW * 0.25, y: screenH * 0.25, w: screenW * 0.50, h: screenH * 0.30 },
@@ -2205,7 +2221,7 @@
                 
                 const isInForbiddenZone = (x, y) => {
                     for (const zone of forbiddenZones) {
-                        const margin = 20;
+                        const margin = 30;
                         if (x + margin < zone.x + zone.w && x + quoteWidth - margin > zone.x &&
                             y + margin < zone.y + zone.h && y + quoteHeight - margin > zone.y) {
                             return true;
@@ -2217,9 +2233,7 @@
                 let preferredZones;
                 if (isMobileDevice) {
                     preferredZones = [
-                        { x: padding, y: padding, w: screenW - padding * 2, h: screenH * 0.25 },
-                        { x: padding, y: screenH * 0.05, w: screenW * 0.45, h: screenH * 0.22 },
-                        { x: screenW * 0.50, y: screenH * 0.05, w: screenW * 0.45, h: screenH * 0.22 }
+                        { x: padding, y: padding, w: screenW - padding * 2, h: screenH * 0.90 }
                     ];
                 } else {
                     preferredZones = [
@@ -2248,8 +2262,8 @@
                     if (isInForbiddenZone(x, y)) continue;
                     
                     let overlap = false;
-                    const minDistanceX = quoteWidth + 15;
-                    const minDistanceY = quoteHeight + 20;
+                    const minDistanceX = isMobileDevice ? quoteWidth + 50 : quoteWidth + 30;
+                    const minDistanceY = isMobileDevice ? quoteHeight + 80 : quoteHeight + 40;
                     
                     for (const pos of this.quotePositions) {
                         const dx = Math.abs(x - pos.x);
