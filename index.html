@@ -15,6 +15,15 @@
             min-height: 100vh;
             overflow: hidden;
             font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #1a1a2e 75%, #16213e 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
@@ -51,7 +60,7 @@
         }
 
         .title {
-            font-size: clamp(5rem, 14vw, 10rem);
+            font-size: clamp(2rem, 10vw, 5rem);
             font-weight: 900;
             letter-spacing: 0.1em;
             background: linear-gradient(90deg, #ff4b7a, #ff6b9d, #ff8fab, #ffc0cb, #ff8fab, #ff6b9d, #ff4b7a);
@@ -108,7 +117,7 @@
         }
 
         .subtitle {
-            font-size: clamp(1.4rem, 4.5vw, 2.2rem);
+            font-size: clamp(1rem, 3vw, 1.6rem);
             color: rgba(255, 182, 193, 0.95);
             letter-spacing: 0.5em;
             margin-bottom: 25px;
@@ -117,15 +126,15 @@
 
         .love-quote {
             position: absolute;
-            font-size: clamp(0.65rem, 2.8vw, 1.0rem);
+            font-size: clamp(0.8rem, 4.2vw, 1.2rem);
             font-weight: 600;
-            background: linear-gradient(135deg, #ff6b9d 0%, #ff4b7a 30%, #ffc0cb 50%, #dda0dd 70%, #ff6b9d 100%);
+            background: linear-gradient(135deg, #ffd700 0%, #ffb347 30%, #ff8c00 50%, #ffb347 70%, #ffd700 100%);
             background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 0.1em;
-            text-shadow: 0 0 30px rgba(255, 75, 122, 0.9), 0 0 60px rgba(255, 107, 157, 0.6), 0 0 100px rgba(221, 160, 221, 0.4);
+            text-shadow: 0 0 30px rgba(255, 183, 71, 0.9), 0 0 60px rgba(255, 140, 0, 0.6), 0 0 100px rgba(255, 215, 0, 0.4);
             opacity: 0;
             pointer-events: none;
             white-space: normal;
@@ -180,10 +189,10 @@
 
         .love-text {
             position: absolute;
-            bottom: 12%;
+            bottom: 20%;
             left: 50%;
             transform: translateX(-50%);
-            font-size: clamp(1.4rem, 4.5vw, 2.5rem);
+            font-size: clamp(1rem, 3vw, 1.6rem);
             color: rgba(255, 107, 157, 0);
             opacity: 0;
             white-space: nowrap;
@@ -231,9 +240,359 @@
         .control-btn.active {
             background: rgba(255, 107, 157, 0.6);
         }
+
+        .quiz-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0a1f 0%, #2d1b36 50%, #1a0a1f 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .quiz-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0.3;
+        }
+
+        .quiz-container {
+            position: relative;
+            background: rgba(255, 75, 122, 0.1);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 107, 157, 0.5);
+            border-radius: 30px;
+            padding: 40px 30px;
+            max-width: 90%;
+            width: 420px;
+            text-align: center;
+            box-shadow: 0 0 60px rgba(255, 75, 122, 0.3), 0 0 100px rgba(255, 107, 157, 0.2);
+            animation: quizFadeIn 0.8s ease-out;
+        }
+
+        @keyframes quizFadeIn {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .quiz-title {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff4b7a 50%, #ffc0cb 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        .quiz-subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: rgba(255, 182, 193, 0.8);
+            margin-bottom: 30px;
+            letter-spacing: 0.15em;
+        }
+
+        .quiz-question {
+            font-size: clamp(1.1rem, 4vw, 1.4rem);
+            color: rgba(255, 182, 193, 0.95);
+            margin-bottom: 25px;
+            line-height: 1.6;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-input {
+            width: 100%;
+            padding: 18px 25px;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            border: 2px solid rgba(255, 107, 157, 0.4);
+            border-radius: 15px;
+            background: rgba(255, 75, 122, 0.1);
+            color: #fff;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .quiz-input:focus {
+            border-color: rgba(255, 107, 157, 0.8);
+            box-shadow: 0 0 30px rgba(255, 75, 122, 0.3);
+        }
+
+        .quiz-input::placeholder {
+            color: rgba(255, 182, 193, 0.4);
+        }
+
+        .quiz-btn {
+            margin-top: 25px;
+            padding: 15px 50px;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            font-weight: 600;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #ff4b7a 0%, #ff6b9d 100%);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 75, 122, 0.4);
+        }
+
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 75, 122, 0.6);
+        }
+
+        .quiz-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .quiz-feedback {
+            margin-top: 20px;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            min-height: 30px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .quiz-feedback.correct {
+            opacity: 1;
+            color: #ff6b9d;
+            text-shadow: 0 0 20px rgba(255, 107, 157, 0.8);
+        }
+
+        .quiz-feedback.wrong {
+            opacity: 1;
+            color: #ff4444;
+        }
+
+        .quiz-heart {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0;
+            animation: heartFloat 2s ease-out infinite;
+        }
+
+        @keyframes heartFloat {
+            0% { opacity: 0; transform: translateY(0) scale(1); }
+            20% { opacity: 1; }
+            100% { opacity: 0; transform: translateY(-100px) scale(0.5); }
+        }
+
+        .quiz-progress {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 107, 157, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: rgba(255, 107, 157, 0.9);
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.8);
+        }
+
+        .spank-animation {
+            width: 150px;
+            height: 120px;
+            margin: 0 auto;
+            position: relative;
+            animation: spank 0.35s ease-in-out infinite;
+        }
+
+        .spank-animation::before {
+            content: '🍑';
+            font-size: 60px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            animation: shake 0.08s ease-in-out infinite, redGlow 0.35s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.5));
+        }
+
+        .spank-animation::after {
+            content: '✋';
+            font-size: 50px;
+            position: absolute;
+            right: -25px;
+            top: 25%;
+            animation: handSpank 0.35s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        @keyframes spank {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-8deg) scale(1.02); }
+            50% { transform: rotate(0deg) scale(0.98); }
+            75% { transform: rotate(8deg) scale(1.02); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            20% { transform: translate(-46%, -54%) rotate(-15deg) scale(1.05); }
+            40% { transform: translate(-54%, -46%) rotate(15deg) scale(0.95); }
+            60% { transform: translate(-48%, -52%) rotate(-10deg) scale(1.02); }
+            80% { transform: translate(-52%, -48%) rotate(10deg) scale(0.98); }
+        }
+
+        @keyframes handSpank {
+            0%, 100% { transform: translateX(0) rotate(0deg) scale(1); }
+            30% { transform: translateX(-35px) rotate(-15deg) scale(1.2); }
+            50% { transform: translateX(-40px) rotate(-20deg) scale(1.3); }
+            70% { transform: translateX(-35px) rotate(-15deg) scale(1.1); }
+        }
+
+        @keyframes redGlow {
+            0%, 45% { filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.5)); }
+            50% { filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.8)) drop-shadow(0 4px 8px rgba(255, 107, 157, 0.5)); }
+            55% { filter: drop-shadow(0 0 30px rgba(255, 0, 0, 1)) drop-shadow(0 4px 8px rgba(255, 107, 157, 0.5)); }
+            60% { filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.8)) drop-shadow(0 4px 8px rgba(255, 107, 157, 0.5)); }
+            65%, 100% { filter: drop-shadow(0 4px 8px rgba(255, 107, 157, 0.5)); }
+        }
+
+        /* 全屏闪烁星光 */
+        .twinkle-stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            overflow: hidden;
+        }
+
+        .twinkle-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle ease-in-out infinite;
+            box-shadow: 0 0 6px 2px rgba(255, 200, 220, 0.5);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 3D旋转相册 */
+        .carousel-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            perspective: 1000px;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        .carousel-container.show {
+            opacity: 1;
+        }
+
+        .carousel {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            animation: rotate3d 15s linear infinite;
+        }
+
+        .carousel-item {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            background: rgba(255, 107, 157, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 107, 157, 0.6);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            backface-visibility: hidden;
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: opacity 0.2s ease;
+        }
+
+        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(220px); }
+        .carousel-item:nth-child(2) { transform: rotateY(72deg) translateZ(220px); }
+        .carousel-item:nth-child(3) { transform: rotateY(144deg) translateZ(220px); }
+        .carousel-item:nth-child(4) { transform: rotateY(216deg) translateZ(220px); }
+        .carousel-item:nth-child(5) { transform: rotateY(288deg) translateZ(220px); }
+
+        @keyframes rotate3d {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
     </style>
 </head>
 <body>
+    <!-- 全屏闪烁星光 -->
+    <div class="twinkle-stars" id="twinkleStars"></div>
+
+    <!-- 3D旋转相册 -->
+    <div class="carousel-container" id="carouselContainer">
+        <div class="carousel">
+            <div class="carousel-item">
+                <img src="https://img.cdn1.vip/i/6a0b39e4019a5_1779120612.webp" alt="照片1" data-alt="https://img.cdn1.vip/i/6a0b3ee27d2d3_1779121890.webp">
+            </div>
+            <div class="carousel-item">
+                <img src="https://img.cdn1.vip/i/6a0b39e16676a_1779120609.webp" alt="照片2" data-alt="https://img.cdn1.vip/i/6a0b3ee0c4dd7_1779121888.webp">
+            </div>
+            <div class="carousel-item">
+                <img src="https://img.cdn1.vip/i/6a0b39e590bc9_1779120613.webp" alt="照片3" data-alt="https://img.cdn1.vip/i/6a0b3ee733ace_1779121895.webp">
+            </div>
+            <div class="carousel-item">
+                <img src="https://img.cdn1.vip/i/6a0b39e884111_1779120616.webp" alt="照片4" data-alt="https://img.cdn1.vip/i/6a0b3eea75c02_1779121898.webp">
+            </div>
+            <div class="carousel-item">
+                <img src="https://img.cdn1.vip/i/6a0b39ea65da4_1779120618.webp" alt="照片5" data-alt="https://img.cdn1.vip/i/6a0b3ee5b0b46_1779121893.webp">
+            </div>
+        </div>
+    </div>
+
+    <div class="quiz-overlay" id="quizOverlay">
+        <div class="quiz-background" id="quizBackground"></div>
+        <div class="quiz-container">
+            <div class="quiz-title">💗 520 心动测试 💗</div>
+            <div class="quiz-subtitle">写下你的答案，解锁我们的专属心动✨</div>
+            <div class="quiz-progress" id="quizProgress"></div>
+            <div class="quiz-question" id="quizQuestion"></div>
+            <input type="text" class="quiz-input" id="quizInput" placeholder="写下你的答案，开启我们的心动瞬间～">
+            <button class="quiz-btn" id="quizBtn">揭晓心动答案</button>
+            <div class="quiz-feedback" id="quizFeedback"></div>
+        </div>
+    </div>
+
     <div class="container" id="container">
         <canvas id="particleCanvas"></canvas>
 
@@ -254,6 +613,207 @@
     </div>
 
     <script>
+        // ========== 问答验证系统 ==========
+        const quizQuestions = [
+            {
+                question: '🌹 你是谁？',
+                answers: [
+                    { text: '涂盼盼', feedback: '😘 嘿嘿，不愧是我的宝贝，连自己名字都记得这么清楚～' },
+                    { text: '大笨蛋', feedback: '😜 敢说自己是大笨蛋，不愧是我的大笨蛋～' },
+                    { text: '小可爱', feedback: '🥰 没错没错，你就是我的小可爱，么么哒～' },
+                    { text: '小笨蛋', feedback: '😝 小笨蛋～，哈哈～～,没错是我大坏蛋的专属小仙女！' }
+                ]
+            },
+            {
+                question: '💗 今天是什么节？',
+                answers: [
+                    { text: '520', feedback: '💖 嘻嘻！520我爱你～答对啦，今晚有奖励哦！' },
+                    { text: '521', feedback: '💝 521我愿意～嘻嘻，也行啦，反正都是爱你的日子！' }
+                ]
+            },
+            {
+                question: '💘 男朋友是谁？',
+                answers: [
+                    { text: '王星', feedback: '😍 嘿嘿～被你发现啦！没错就是我这个大坏蛋～' },
+                    { text: '大坏蛋', feedback: '😈 哈哈，大坏蛋来啦！今晚要好好欺负你～' }
+                ]
+            },
+            {
+                question: '💕 我们要一起多久？',
+                answers: [
+                    { text: '很久', feedback: '🤗 很久不够哦～要更久更久才行！' },
+                    { text: '永远', feedback: '💞 永远永远！生生世世都要在一起～' },
+                    { text: '一辈子', feedback: '❤️ 一辈子太短啦～下辈子也要找到你！' },
+                    { text: '每一天', feedback: '☀️ 对呀！从今天开始的每一天都要在一起～' }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let wrongCount = 0;
+        let quizOverlay, quizQuestion, quizInput, quizBtn, quizFeedback, quizProgress;
+        let globalAudioManager = null;
+
+        function initQuiz() {
+            quizOverlay = document.getElementById('quizOverlay');
+            quizQuestion = document.getElementById('quizQuestion');
+            quizInput = document.getElementById('quizInput');
+            quizBtn = document.getElementById('quizBtn');
+            quizFeedback = document.getElementById('quizFeedback');
+            quizProgress = document.getElementById('quizProgress');
+
+            if (!globalAudioManager) {
+                    globalAudioManager = new AudioManager();
+                    globalAudioManager.init();
+                    globalAudioManager.playBackgroundMusic('quiz');
+                }
+
+            renderProgress();
+            showCurrentQuestion();
+
+            quizBtn.addEventListener('click', checkAnswer);
+            quizInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkAnswer();
+            });
+
+            document.addEventListener('click', function startMusic() {
+                if (globalAudioManager) {
+                    globalAudioManager.playBackgroundMusic('quiz');
+                }
+                document.removeEventListener('click', startMusic);
+            }, { once: true });
+
+            createQuizHearts();
+        }
+
+        function renderProgress() {
+            quizProgress.innerHTML = '';
+            for (let i = 0; i < quizQuestions.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot' + (i < currentQuestionIndex ? ' active' : '');
+                quizProgress.appendChild(dot);
+            }
+        }
+
+        function showCurrentQuestion() {
+            quizQuestion.textContent = quizQuestions[currentQuestionIndex].question;
+            quizInput.value = '';
+            quizInput.focus();
+            quizFeedback.className = 'quiz-feedback';
+            quizFeedback.textContent = '';
+        }
+
+        function checkAnswer() {
+            const answer = quizInput.value.trim().toLowerCase();
+            const currentQuestion = quizQuestions[currentQuestionIndex];
+            
+            if (!answer) {
+                quizFeedback.className = 'quiz-feedback wrong';
+                quizFeedback.textContent = '请输入答案呀~';
+                return;
+            }
+
+            const matchedAnswer = currentQuestion.answers.find(a => a.text.toLowerCase() === answer);
+
+            if (matchedAnswer) {
+                wrongCount = 0;
+                quizFeedback.className = 'quiz-feedback correct';
+                quizFeedback.textContent = matchedAnswer.feedback;
+                
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex >= quizQuestions.length) {
+                        if (globalAudioManager) {
+                            globalAudioManager.playBackgroundMusic('main');
+                        }
+                        startAnimation();
+                    } else {
+                        wrongCount = 0;
+                        renderProgress();
+                        showCurrentQuestion();
+                    }
+                }, 1500);
+            } else {
+                wrongCount++;
+                quizFeedback.className = 'quiz-feedback wrong';
+                
+                const wrongMessages = [
+                    '大笨蛋，这都能错，要罚你亲我一口再猜😜💋',
+                    '大笨蛋，你又错了，要罚你亲我两口了😜💋💋',
+                    '大笨蛋，你又错了，再错可要被打屁股了😜💋💋💋',
+                    '<div class="spank-animation"></div><br/>💢😤 还不快好好想想！',
+                    '<div class="spank-animation"></div><br/>💢😤😭 你是不是故意的！',
+                    '<div class="spank-animation"></div><br/>💢😤😭💔 我生气了！快给我答对！提示：'
+                ];
+                
+                const messageIndex = Math.min(wrongCount - 1, wrongMessages.length - 1);
+                if (wrongCount >= 6) {
+                    const hints = [
+                        '大笨蛋，想想你叫什么~',
+                        '大笨蛋，想想今天是什么日子~',
+                        '大笨蛋，想想是谁在问你这道题~',
+                        '大笨蛋，答案是永远呀~'
+                    ];
+                    quizFeedback.innerHTML = wrongMessages[messageIndex] + hints[currentQuestionIndex];
+                } else {
+                    quizFeedback.innerHTML = wrongMessages[messageIndex];
+                }
+            }
+        }
+
+        function createQuizHearts() {
+            const overlay = document.getElementById('quizOverlay');
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'quiz-heart';
+                heart.textContent = '💕';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.bottom = '-20px';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                heart.style.animationDuration = (2 + Math.random() * 2) + 's';
+                overlay.appendChild(heart);
+            }
+        }
+
+        function startAnimation() {
+            quizOverlay.style.opacity = '0';
+            quizOverlay.style.pointerEvents = 'none';
+            setTimeout(() => {
+                quizOverlay.style.display = 'none';
+            }, 500);
+
+            const loveAnimation = new LoveAnimation();
+            if (globalAudioManager) {
+                loveAnimation.audioManager = globalAudioManager;
+            }
+            loveAnimation.startAnimation();
+        }
+
+        // 全屏星光闪烁
+        function createTwinkleStars() {
+            const container = document.getElementById('twinkleStars');
+            for(let i = 0; i < 120; i++) {
+                const star = document.createElement('div');
+                star.className = 'twinkle-star';
+                const size = Math.random() * 3 + 1;
+                star.style.cssText = `
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    opacity: ${Math.random() * 0.8 + 0.2};
+                    animation: twinkle ${Math.random() * 2 + 1}s infinite alternate;
+                    animation-delay: ${Math.random() * 2}s;
+                `;
+                container.appendChild(star);
+            }
+        }
+        
+        // 页面加载时创建星光
+        document.addEventListener('DOMContentLoaded', () => {
+            createTwinkleStars();
+        });
+
         // ========== 全局配置 ==========
         const CONFIG = {
             colors: {
@@ -284,12 +844,12 @@
                 loopInterval: 4000
             },
             animation: {
-                duration: 52100,
-                bloomDelay: 2500,
-                fadeDelay: 5000,
+                duration: 91400,
+                bloomDelay: 4000,      // 从2.5秒增加到4秒，给粒子更多汇聚时间
+                fadeDelay: 6500,       // 相应推迟disperse阶段
                 heartbeatSpeed: 0.003,
-                typingStartDelay: 6000,
-                autoClickInterval: 1500
+                typingStartDelay: 5000, // 打字机效果也相应推迟
+                autoClickInterval: 2500
             }
         };
 
@@ -298,7 +858,7 @@
         if (isMobile) {
             CONFIG.particle.count = Math.floor(CONFIG.particle.count * 0.6);
             CONFIG.particle.poolSize = Math.floor(CONFIG.particle.poolSize * 0.6);
-            CONFIG.animation.autoClickInterval = 1500;
+            CONFIG.animation.autoClickInterval = 2500;
         }
 
         // ========== 粒子对象池 ==========
@@ -411,9 +971,9 @@
                     this.vy *= 0.985;
                     this.updateColor(phase);
                 } else if (phase === 'disperse') {
-                    this.vy -= 0.25 + distRatio * 0.1;
-                    this.vx += (Math.random() - 0.5) * 0.4;
-                    this.alpha -= 0.004;
+                    this.vy -= 0.35 + distRatio * 0.15;
+                    this.vx += (Math.random() - 0.5) * 0.5;
+                    this.alpha -= 0.015;
                     this.updateColor(phase);
                 }
 
@@ -425,10 +985,17 @@
                     this.trail.shift();
                 }
 
-                if (this.x < -50) this.x = this.canvas.width + 50;
-                if (this.x > this.canvas.width + 50) this.x = -50;
-                if (this.y < -50) this.y = this.canvas.height + 50;
-                if (this.y > this.canvas.height + 50) this.y = -50;
+                if (phase === 'disperse') {
+                    if (this.y < -100 || this.alpha <= 0) {
+                        this.alpha = 0;
+                        return false;
+                    }
+                } else {
+                    if (this.x < -50) this.x = this.canvas.width + 50;
+                    if (this.x > this.canvas.width + 50) this.x = -50;
+                    if (this.y < -50) this.y = this.canvas.height + 50;
+                    if (this.y > this.canvas.height + 50) this.y = -50;
+                }
 
                 return this.alpha > 0;
             }
@@ -855,6 +1422,69 @@
             }
         }
 
+        // ========== 爱心飘落 ==========
+        class HeartRain {
+            constructor(canvas, x) {
+                this.canvas = canvas;
+                this.x = x;
+                this.y = canvas.height + 50;
+                this.size = Math.random() * 10 + 15;
+                this.speedY = -(Math.random() * 4 + 6);
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.wobble = Math.random() * Math.PI * 2;
+                this.wobbleSpeed = Math.random() * 0.15 + 0.08;
+                this.baseAlpha = Math.random() * 0.3 + 0.6;
+                this.alpha = this.baseAlpha;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = Math.random() * 0.05 - 0.025;
+                this.colors = ['#ff4b7a', '#ff6b9d', '#ff8fab', '#ffc0cb', '#ff69b4', '#ff1493'];
+                this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
+                this.fadeStartY = canvas.height * 0.6;
+                this.shimmer = Math.random() * Math.PI * 2;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.wobble) * 0.8;
+                this.wobble += this.wobbleSpeed;
+                this.rotation += this.rotationSpeed;
+                this.shimmer += 0.1;
+                
+                if (this.y < this.fadeStartY) {
+                    const fadeRatio = Math.pow(1 - (this.y / this.fadeStartY), 2);
+                    this.alpha = this.baseAlpha * (1 - Math.min(fadeRatio, 1));
+                } else {
+                    this.alpha = this.baseAlpha;
+                }
+                
+                return this.y > -60 && this.alpha > 0.01;
+            }
+
+            draw(ctx) {
+                if (this.alpha <= 0) return;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.alpha * (0.8 + Math.sin(this.shimmer) * 0.2);
+                
+                const glowIntensity = 0.6 + Math.sin(this.shimmer * 2) * 0.4;
+                ctx.shadowBlur = 12 * glowIntensity;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = this.color;
+                
+                const s = this.size;
+                ctx.beginPath();
+                ctx.moveTo(0, s * 0.3);
+                ctx.bezierCurveTo(0, 0, -s * 0.5, 0, -s * 0.5, s * 0.3);
+                ctx.bezierCurveTo(-s * 0.5, s * 0.6, 0, s * 0.8, 0, s);
+                ctx.bezierCurveTo(0, s * 0.8, s * 0.5, s * 0.6, s * 0.5, s * 0.3);
+                ctx.bezierCurveTo(s * 0.5, 0, 0, 0, 0, s * 0.3);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+        }
+
         // ========== 星星粒子 ==========
         class Star {
             constructor(canvas) {
@@ -952,12 +1582,12 @@
                 this.isMuted = false;
                 this.backgroundPlaying = false;
                 this.audioInitialized = false;
+                this.currentTrack = null;
             }
 
             init() {
                 if (!this.audio) {
                     this.audio = new Audio();
-                    this.audio.src = '所念皆星河（新版）-CMJ.mp3';
                     this.audio.loop = true;
                     this.audio.volume = 0.5;
                     this.audio.preload = 'auto';
@@ -970,6 +1600,23 @@
                 return this;
             }
 
+            setTrack(trackName) {
+                if (this.currentTrack === trackName) return;
+                
+                const tracks = {
+                    'quiz': { src: '晚风的告白.mp3', volume: 0.3 },
+                    'main': { src: '所念皆星河（新版）-CMJ.mp3', volume: 0.6 }
+                };
+                
+                if (tracks[trackName]) {
+                    this.currentTrack = trackName;
+                    this.audio.src = tracks[trackName].src;
+                    if (!this.isMuted) {
+                        this.audio.volume = tracks[trackName].volume;
+                    }
+                }
+            }
+
             toggleMute() {
                 this.isMuted = !this.isMuted;
                 if (this.audio) {
@@ -978,8 +1625,10 @@
                 return this.isMuted;
             }
 
-            async playBackgroundMusic() {
+            async playBackgroundMusic(track = 'main') {
                 if (this.isMuted || !this.audio) return;
+
+                this.setTrack(track);
 
                 try {
                     this.audio.currentTime = 0;
@@ -1032,6 +1681,7 @@
                 this.fallingPetals = [];
                 this.ripples = [];
                 this.fireworks = [];
+                this.heartRains = [];
                 this.stars = [];
                 this.fog = [];
                 
@@ -1046,13 +1696,16 @@
                 this.isLooping = false;
                 this.autoClickTimer = null;
                 
-                this.typingText = '❤️ 遇见你，是我最美的意外 ❤️';
+                this.typingText = '❤️ 大笨蛋，遇见你，是我最美的意外 ❤️';
                 this.typingIndex = 0;
                 this.typingInterval = null;
                 this.typingStarted = false;
+                this.quotesStarted = false;
+                this.heartsStarted = false;
                 
                 this.roseReplaceTimer = null;
                 this.roseReplaceIndex = 0;
+                this.usingAltPhotos = false;
                 
                 this.init();
             }
@@ -1144,13 +1797,21 @@
                 this.roseReplaceIndex = 0;
                 
                 const replaceNext = () => {
-                    if (this.roseReplaceIndex >= this.roses.length) {
-                        this.roseReplaceTimer = null;
+                    const activeRoses = this.roses.filter(r => !r.fadeOut || r.fadeOutPhase < 1);
+                    
+                    if (activeRoses.length >= 5) {
+                        this.roseReplaceTimer = setTimeout(replaceNext, 2000);
                         return;
                     }
                     
+                    if (this.roseReplaceIndex >= 5) {
+                        this.roseReplaceIndex = 0;
+                    }
+                    
                     const oldRose = this.roses[this.roseReplaceIndex];
-                    oldRose.startFadeOut();
+                    if (oldRose && !oldRose.fadeOut) {
+                        oldRose.startFadeOut();
+                    }
                     
                     const newPos = this.createNewRosePosition();
                     const newRose = new RoseFlower(this.canvas, newPos.x, newPos.y, newPos.radius);
@@ -1158,7 +1819,7 @@
                     
                     this.roseReplaceIndex++;
                     
-                    this.roseReplaceTimer = setTimeout(replaceNext, CONFIG.rose.replaceInterval + CONFIG.rose.fadeOutDuration);
+                    this.roseReplaceTimer = setTimeout(replaceNext, CONFIG.rose.replaceInterval);
                 };
                 
                 replaceNext();
@@ -1212,12 +1873,55 @@
                 this.audioManager.init();
                 
                 if (!this.audioManager.isMuted && !this.audioManager.backgroundPlaying && !isAuto) {
+                    // 只在没有播放音乐时才播放，避免覆盖答题音乐
                     this.audioManager.playBackgroundMusic();
+                }
+                
+                // 切换相册照片（非自动点击时）
+                if (!isAuto && this.phase !== 'idle') {
+                    this.toggleCarouselPhotos();
                 }
                 
                 if (this.phase === 'idle') {
                     this.startAnimation();
                 }
+            }
+
+            toggleCarouselPhotos() {
+                this.usingAltPhotos = !this.usingAltPhotos;
+                const carousel = document.getElementById('carouselContainer');
+                if (!carousel) return;
+                
+                const imgs = carousel.querySelectorAll('img');
+                imgs.forEach(img => {
+                    const originalSrc = 'https://img.cdn1.vip/i/6a0b39e4019a5_1779120612.webp';
+                    const originalSrc2 = 'https://img.cdn1.vip/i/6a0b39e16676a_1779120609.webp';
+                    const originalSrc3 = 'https://img.cdn1.vip/i/6a0b39e590bc9_1779120613.webp';
+                    const originalSrc4 = 'https://img.cdn1.vip/i/6a0b39e884111_1779120616.webp';
+                    const originalSrc5 = 'https://img.cdn1.vip/i/6a0b39ea65da4_1779120618.webp';
+                    const altSrc = 'https://img.cdn1.vip/i/6a0b3ee27d2d3_1779121890.webp';
+                    const altSrc2 = 'https://img.cdn1.vip/i/6a0b3ee0c4dd7_1779121888.webp';
+                    const altSrc3 = 'https://img.cdn1.vip/i/6a0b3ee733ace_1779121895.webp';
+                    const altSrc4 = 'https://img.cdn1.vip/i/6a0b3eea75c02_1779121898.webp';
+                    const altSrc5 = 'https://img.cdn1.vip/i/6a0b3ee5b0b46_1779121893.webp';
+                    
+                    const currentSrc = img.getAttribute('src');
+                    const index = Array.from(imgs).indexOf(img);
+                    
+                    const originalSources = [originalSrc, originalSrc2, originalSrc3, originalSrc4, originalSrc5];
+                    const altSources = [altSrc, altSrc2, altSrc3, altSrc4, altSrc5];
+                    
+                    if (this.usingAltPhotos) {
+                        img.setAttribute('src', altSources[index]);
+                    } else {
+                        img.setAttribute('src', originalSources[index]);
+                    }
+                    
+                    img.style.opacity = '0';
+                    setTimeout(() => {
+                        img.style.opacity = '1';
+                    }, 100);
+                });
             }
 
             toggleLoop() {
@@ -1238,6 +1942,7 @@
 
             startAnimation() {
                 this.audioManager.init();
+                // 只在没有播放音乐时才播放，避免覆盖答题音乐
                 if (!this.audioManager.isMuted && !this.audioManager.backgroundPlaying) {
                     this.audioManager.playBackgroundMusic();
                 }
@@ -1247,10 +1952,18 @@
                 this.startTime = Date.now();
                 this.elapsed = 0;
                 this.typingStarted = false;
+                this.quotesStarted = false;
+                this.heartsStarted = false;
                 
                 this.textContainer.classList.remove('visible');
                 this.loveText.classList.remove('show');
                 this.hint.classList.remove('up');
+                
+                // 隐藏3D旋转相册
+                const carouselContainer = document.getElementById('carouselContainer');
+                if (carouselContainer) {
+                    carouselContainer.classList.remove('show');
+                }
                 
                 this.typingIndex = 0;
                 this.loveText.textContent = '';
@@ -1262,17 +1975,25 @@
                 this.createParticles();
                 this.createRoses();
                 
-                this.startAutoClick();
+                // 打字机结束后显示3D旋转相册
+                setTimeout(() => {
+                    if (carouselContainer) {
+                        carouselContainer.classList.add('show');
+                    }
+                }, 7000);
                 
                 this.animate();
             }
             
-            startAutoClick() {
+            startHeartRain() {
                 if (this.autoClickTimer) clearInterval(this.autoClickTimer);
                 
                 this.autoClickTimer = setInterval(() => {
                     if (this.phase === 'bloom' || this.phase === 'disperse') {
-                        this.handleClick(null, true);
+                        for (let i = 0; i < 2; i++) {
+                            const x = Math.random() * this.canvas.width;
+                            this.heartRains.push(new HeartRain(this.canvas, x));
+                        }
                     }
                 }, CONFIG.animation.autoClickInterval);
             }
@@ -1319,6 +2040,24 @@
                     }
                     this.phase = 'bloom';
                     this.textContainer.classList.add('visible');
+                    
+                    if (!this.quotesStarted) {
+                        this.quotesStarted = true;
+                        setTimeout(() => {
+                            if (this.phase !== 'idle') {
+                                this.startLoveQuotes();
+                            }
+                        }, 500);  // bloom后0.5秒（打字机结束前出现）
+                    }
+                    
+                    if (!this.heartsStarted) {
+                        this.heartsStarted = true;
+                        setTimeout(() => {
+                            if (this.phase !== 'idle') {
+                                this.startHeartRain();
+                            }
+                        }, 300);
+                    }
                 }
                 
                 if (elapsed > CONFIG.animation.typingStartDelay && !this.typingStarted) {
@@ -1329,7 +2068,6 @@
                 this.render(elapsed);
                 
                 if (this.phase === 'disperse') {
-                    const aliveParticles = this.particles.filter(p => p.alpha > 0);
                     const totalDuration = CONFIG.animation.duration;
                     const stopClickTime = totalDuration - 3000;
                     
@@ -1337,7 +2075,7 @@
                         this.stopAutoClick();
                     }
                     
-                    if (elapsed >= totalDuration || aliveParticles.length === 0) {
+                    if (elapsed >= totalDuration) {
                         if (this.isLooping) {
                             setTimeout(() => {
                                 this.startAnimation();
@@ -1365,7 +2103,6 @@
                         this.typingIndex++;
                     } else {
                         clearInterval(this.typingInterval);
-                        this.startLoveQuotes();
                     }
                 }, 80);
             }
@@ -1374,26 +2111,57 @@
                 if (this.quoteTimer) clearInterval(this.quoteTimer);
                 
                 const quotes = [
-                    '💕 平平淡淡日子里，有你陪着就很好 💕',
-                    '💗 不求轰轰烈烈，只想安稳陪在你身边 💗',
-                    '💖 往后日子，三餐四季，安稳度日就知足 💖',
-                    '💝 身边一直是你，就是最踏实的幸福 💝',
-                    '💞 没什么华丽情话，只想真心对你好 💞',
-                    '💓 好好过日子，岁岁年年都在一起 💓',
-                    '💟 累了有人依靠，难过有人陪伴就够了 💟',
-                    '❣️ 简简单单生活，踏踏实实爱着你 ❣️',
-                    '💘 认定是你，就只想和你一直走下去 💘',
-                    '💙 不用多浪漫，真心相待胜过一切 💙',
-                    '💚 日常琐碎皆是温柔，有你便心安 💚',
-                    '💛 满心都是你，余生慢慢陪着你 💛',
-                    '💜 日子平淡无奇，好在身边一直有你 💜',
-                    '💗 不善言辞，但对你的心意从来不假 💗',
-                    '💖 往后风雨同舟，平凡日子相守白头 💖',
-                    '💝 珍惜眼前人，好好把握这份缘分 💝',
-                    '💞 不求大富大贵，只求平安喜乐有你 💞',
-                    '💓 用心对待彼此，把普通日子过温暖 💓',
-                    '💟 遇见不容易，定会好好珍惜这份感情 💟',
-                    '❣️ 努力好好生活，只想给你安稳未来 ❣️'
+                    '💕 每天睁眼想到你，就觉得日子特别舒心 💕',
+                    '💗 不用刻意制造浪漫，在一起我就很开心 💗',
+                    '💖 平平淡淡过日子，身边有你就足够啦 💖',
+                    '💝 日常碎碎念念，身边岁岁年年都是你 💝',
+                    '💞 累的时候靠靠你，烦恼瞬间就没啦 💞',
+                    '💓 没想过太多未来，只想要有你陪着 💓',
+                    '💟 柴米油盐小日子，有你陪着最踏实 💟',
+                    '❣️ 脾气互相包容，日子慢慢过就很好 ❣️',
+                    '💘 简简单单在一起，舒服自在最难得 💘',
+                    '💙 三餐一起吃，琐事一起扛就知足 💙',
+                    '💚 不用甜言蜜语，真心实意陪着你 💚',
+                    '💛 往后朝夕相伴，平淡安稳过完一生 💛',
+                    '💜 生活普普通通，好在身边一直是你 💜',
+                    '💗 开心一起分享，难过彼此安慰就够 💗',
+                    '💖 认定这个人，就想踏踏实实走到底 💖',
+                    '💝 不求荣华富贵，只求天天都能见到你 💝',
+                    '💞 日子慢慢走，爱意稳稳留在心底 💞',
+                    '💓 身边有你陪伴，再平淡也满是欢喜 💓',
+                    '💟 平时唠唠家常，安安稳稳共度朝夕 💟',
+                    '❣️ 遇见即是幸运，好好珍惜这份陪伴 ❣️',
+                    '💘 不必轰轰烈烈，细水长流最是长久 💘',
+                    '💙 往后风雨一起扛，平淡日常一起享 💙',
+                    '💚 满心满眼都是你，日常点滴都是爱 💚',
+                    '💛 生活平平无奇，有你就满是暖意 💛',
+                    '💜 不善说好听的，只想实实在在对你好 💜',
+                    '💗 岁岁年年不变，朝夕朝夕不离身边 💗',
+                    '💖 守着小小幸福，陪着心爱之人度日 💖',
+                    '💝 烟火日常相伴，简简单单最是心安 💝',
+                    '💞 余生不长不短，只想和你安稳走完 💞',
+                    '💓 所有温柔偏爱，全都留给身边的你 💓',
+                    '💟 一起熬过琐碎，一起享受平淡幸福 💟',
+                    '❣️ 不用惊艳时光，只求温柔陪伴岁月 ❣️',
+                    '💘 日常互相迁就，平平淡淡走到白头 💘',
+                    '💙 一屋两人朝夕，安稳舒心便是圆满 💙',
+                    '💚 心事有人诉说，日常有人陪伴足矣 💚',
+                    '💛 往后余生岁月，满心欢喜皆是为你 💛',
+                    '💜 踏实安稳过日子，真心诚意爱着你 💜',
+                    '💗 人间烟火寻常，有你陪伴便是圆满 💗',
+                    '💖 珍惜每份相处，安稳度过岁岁年年 💖',
+                    '💝 日子简简单单，满心欢喜全都是你 💝',
+                    '💞 一起体验生活百态，相守在每个朝夕 💞',
+                    '💓 琐碎生活里，最庆幸身边始终是你 💓',
+                    '💟 彼此迁就包容，把小日子过得温馨顺遂 💟',
+                    '❣️ 比起情话万千，更偏爱朝夕相守陪伴 ❣️',
+                    '💘 余生携手同行，安稳度过岁岁朝朝 💘',
+                    '💙 满心满眼皆是偏爱，余生只钟情于你 💙',
+                    '💚 守着平淡烟火，与你共度岁岁年年 💚',
+                    '💛 真心交付彼此，安稳奔赴往后余生 💛',
+                    '💜 平淡岁月温柔相守，不离不弃朝夕相伴 💜',
+                    '💗 有幸与你相逢相守，知足当下所有温柔 💗',
+                    '💖 烟火生活相依相伴，平淡爱意细水长流 💖'
                 ];
                 
                 const usedQuotes = [];
@@ -1449,9 +2217,9 @@
                 let preferredZones;
                 if (isMobileDevice) {
                     preferredZones = [
-                        { x: padding, y: padding, w: screenW - padding * 2, h: screenH * 0.20 },
-                        { x: padding, y: screenH * 0.35, w: screenW - padding * 2, h: screenH * 0.15 },
-                        { x: padding, y: screenH * 0.55, w: screenW - padding * 2, h: screenH * 0.15 }
+                        { x: padding, y: padding, w: screenW - padding * 2, h: screenH * 0.25 },
+                        { x: padding, y: screenH * 0.05, w: screenW * 0.45, h: screenH * 0.22 },
+                        { x: screenW * 0.50, y: screenH * 0.05, w: screenW * 0.45, h: screenH * 0.22 }
                     ];
                 } else {
                     preferredZones = [
@@ -1578,10 +2346,13 @@
                     this.fallingPetals.push(new FallingPetal(this.canvas, rose.x, rose.y));
                 }
                 
-                this.particles.forEach(particle => {
+                this.particles = this.particles.filter(particle => {
                     if (particle.update(this.phase, elapsed)) {
                         particle.draw(this.ctx);
+                        return true;
                     }
+                    this.particlePool.recycle(particle);
+                    return false;
                 });
                 
                 this.ripples = this.ripples.filter(r => {
@@ -1595,6 +2366,14 @@
                 this.fireworks = this.fireworks.filter(f => {
                     if (f.update()) {
                         f.draw(this.ctx);
+                        return true;
+                    }
+                    return false;
+                });
+                
+                this.heartRains = this.heartRains.filter(h => {
+                    if (h.update()) {
+                        h.draw(this.ctx);
                         return true;
                     }
                     return false;
@@ -1708,7 +2487,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            new LoveAnimation();
+            initQuiz();
         });
     </script>
 </body>
