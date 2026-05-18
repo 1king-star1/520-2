@@ -556,18 +556,18 @@
         /* 移动端适配 */
         @media (max-width: 768px) {
             .carousel-container {
-                width: 180px;
-                height: 180px;
+                width: 150px;
+                height: 150px;
             }
             .carousel-item {
-                width: 120px;
-                height: 120px;
+                width: 100px;
+                height: 100px;
             }
-            .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(180px); }
-            .carousel-item:nth-child(2) { transform: rotateY(72deg) translateZ(180px); }
-            .carousel-item:nth-child(3) { transform: rotateY(144deg) translateZ(180px); }
-            .carousel-item:nth-child(4) { transform: rotateY(216deg) translateZ(180px); }
-            .carousel-item:nth-child(5) { transform: rotateY(288deg) translateZ(180px); }
+            .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(150px); }
+            .carousel-item:nth-child(2) { transform: rotateY(72deg) translateZ(150px); }
+            .carousel-item:nth-child(3) { transform: rotateY(144deg) translateZ(150px); }
+            .carousel-item:nth-child(4) { transform: rotateY(216deg) translateZ(150px); }
+            .carousel-item:nth-child(5) { transform: rotateY(288deg) translateZ(150px); }
         }
     </style>
 </head>
@@ -2213,6 +2213,48 @@
                 const quoteWidth = isMobileDevice ? screenW - padding * 2 : 350;
                 const quoteHeight = isMobileDevice ? 30 : 50;
                 
+                if (isMobileDevice) {
+                    const x = (screenW - quoteWidth) / 2;
+                    const verticalGap = 90;
+                    const startY = padding + 100;
+                    const fixedPositions = [];
+                    let y = startY;
+                    while (y + quoteHeight < screenH - padding) {
+                        fixedPositions.push(y);
+                        y += verticalGap;
+                    }
+                    
+                    const lastPos = this.quotePositions.length > 0 ? this.quotePositions[this.quotePositions.length - 1] : null;
+                    let availableIndices = [];
+                    
+                    for (let i = 0; i < fixedPositions.length; i++) {
+                        if (!lastPos) {
+                            availableIndices.push(i);
+                        } else {
+                            const lastIndex = fixedPositions.indexOf(lastPos.y);
+                            if (lastIndex === -1) {
+                                availableIndices.push(i);
+                            } else if (Math.abs(i - lastIndex) >= 5) {
+                                availableIndices.push(i);
+                            }
+                        }
+                    }
+                    
+                    if (availableIndices.length === 0) {
+                        for (let i = 0; i < fixedPositions.length; i++) {
+                            if (!lastPos || Math.abs(i - fixedPositions.indexOf(lastPos.y)) >= 3) {
+                                availableIndices.push(i);
+                            }
+                        }
+                    }
+                    if (availableIndices.length === 0) {
+                        availableIndices = Array.from({ length: fixedPositions.length }, (_, i) => i);
+                    }
+                    
+                    const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+                    return { x, y: fixedPositions[randomIndex] };
+                }
+                
                 const forbiddenZones = [
                     { x: screenW * 0.25, y: screenH * 0.25, w: screenW * 0.50, h: screenH * 0.30 },
                     { x: screenW * 0.30, y: screenH * 0.50, w: screenW * 0.40, h: screenH * 0.12 },
@@ -2230,19 +2272,12 @@
                     return false;
                 };
                 
-                let preferredZones;
-                if (isMobileDevice) {
-                    preferredZones = [
-                        { x: padding, y: padding, w: screenW - padding * 2, h: screenH * 0.90 }
-                    ];
-                } else {
-                    preferredZones = [
-                        { x: padding, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
-                        { x: screenW * 0.60, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
-                        { x: padding, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 },
-                        { x: screenW * 0.60, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 }
-                    ];
-                }
+                const preferredZones = [
+                    { x: padding, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
+                    { x: screenW * 0.60, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
+                    { x: padding, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 },
+                    { x: screenW * 0.60, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 }
+                ];
                 
                 const getPositionFromZone = (zone) => {
                     const availableWidth = Math.max(0, zone.w - quoteWidth);
@@ -2262,8 +2297,8 @@
                     if (isInForbiddenZone(x, y)) continue;
                     
                     let overlap = false;
-                    const minDistanceX = isMobileDevice ? quoteWidth + 50 : quoteWidth + 30;
-                    const minDistanceY = isMobileDevice ? quoteHeight + 80 : quoteHeight + 40;
+                    const minDistanceX = quoteWidth + 30;
+                    const minDistanceY = quoteHeight + 40;
                     
                     for (const pos of this.quotePositions) {
                         const dx = Math.abs(x - pos.x);
