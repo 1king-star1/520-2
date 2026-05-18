@@ -137,7 +137,8 @@
             text-shadow: 0 0 30px rgba(255, 183, 71, 0.9), 0 0 60px rgba(255, 140, 0, 0.6), 0 0 100px rgba(255, 215, 0, 0.4);
             opacity: 0;
             pointer-events: none;
-            white-space: nowrap;
+            white-space: normal;
+            max-width: 85%;
             text-align: center;
             z-index: 20;
             animation: quoteFloat 4s ease-in-out infinite, quoteGlow 2s ease-in-out infinite, quoteGradient 3s ease infinite;
@@ -187,17 +188,14 @@
         }
 
         .love-text {
-            position: absolute;
-            bottom: 35%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: clamp(1.2rem, 4vw, 2rem);
+            font-size: clamp(1rem, 3vw, 1.6rem);
             color: rgba(255, 107, 157, 0);
             opacity: 0;
             white-space: nowrap;
             transition: all 1.5s ease;
             text-shadow: 0 0 30px rgba(255, 107, 157, 0.9), 0 0 60px rgba(255, 139, 182, 0.5);
             letter-spacing: 0.05em;
+            margin: 15px 0;
         }
 
         .love-text.show {
@@ -207,8 +205,8 @@
         }
 
         @keyframes textFloat {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-10px); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .controls {
@@ -278,6 +276,15 @@
         @keyframes quizFadeIn {
             0% { opacity: 0; transform: scale(0.8) translateY(20px); }
             100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .quiz-container.transition {
+            transition: all 0.4s ease;
+        }
+
+        .quiz-container.fade-out {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
         }
 
         .quiz-title {
@@ -615,11 +622,10 @@
         <div class="text-container" id="textContainer">
             <div class="title">520</div>
             <div class="subtitle">我爱你</div>
+            <div class="love-text" id="loveText">
+                ❤️ 大笨蛋，遇见你是我最美的意外 ❤️
+            </div>
             <div class="hint" id="hint">点屏幕有惊喜...</div>
-        </div>
-
-        <div class="love-text" id="loveText">
-            ❤️ 大笨蛋，遇见你是我最美的意外 ❤️
         </div>
 
         <div class="controls">
@@ -737,18 +743,27 @@
                 quizFeedback.textContent = matchedAnswer.feedback;
                 
                 setTimeout(() => {
-                    currentQuestionIndex++;
-                    if (currentQuestionIndex >= quizQuestions.length) {
-                        if (globalAudioManager) {
-                            globalAudioManager.playBackgroundMusic('main');
+                    const quizContainer = document.querySelector('.quiz-container');
+                    quizContainer.classList.add('transition', 'fade-out');
+                    
+                    setTimeout(() => {
+                        currentQuestionIndex++;
+                        if (currentQuestionIndex >= quizQuestions.length) {
+                            if (globalAudioManager) {
+                                globalAudioManager.playBackgroundMusic('main');
+                            }
+                            startAnimation();
+                        } else {
+                            wrongCount = 0;
+                            renderProgress();
+                            showCurrentQuestion();
+                            quizContainer.classList.remove('fade-out');
+                            setTimeout(() => {
+                                quizContainer.classList.remove('transition');
+                            }, 400);
                         }
-                        startAnimation();
-                    } else {
-                        wrongCount = 0;
-                        renderProgress();
-                        showCurrentQuestion();
-                    }
-                }, 1500);
+                    }, 300);
+                }, 500);
             } else {
                 wrongCount++;
                 quizFeedback.className = 'quiz-feedback wrong';
@@ -2208,64 +2223,10 @@
                 const screenW = window.innerWidth;
                 
                 const isMobileDevice = screenW < 768;
-                const padding = isMobileDevice ? 15 : 60;
-                const maxAttempts = 150;
+                const padding = isMobileDevice ? 20 : 60;
+                const maxAttempts = 100;
                 const quoteWidth = isMobileDevice ? screenW - padding * 2 : 350;
-                const quoteHeight = isMobileDevice ? 30 : 50;
-                
-                if (isMobileDevice) {
-                    const x = (screenW - quoteWidth) / 2;
-                    const verticalGap = 90;
-                    const startY = padding + 100;
-                    const fixedPositions = [];
-                    let y = startY;
-                    while (y + quoteHeight < screenH - padding) {
-                        fixedPositions.push(y);
-                        y += verticalGap;
-                    }
-                    
-                    let availableIndices = [];
-                    
-                    for (let i = 0; i < fixedPositions.length; i++) {
-                        const posY = fixedPositions[i];
-                        let isFarEnough = true;
-                        
-                        for (const pos of this.quotePositions) {
-                            const posIndex = fixedPositions.indexOf(pos.y);
-                            if (posIndex !== -1 && Math.abs(i - posIndex) < 3) {
-                                isFarEnough = false;
-                                break;
-                            }
-                        }
-                        
-                        if (isFarEnough) {
-                            availableIndices.push(i);
-                        }
-                    }
-                    
-                    if (availableIndices.length === 0) {
-                        for (let i = 0; i < fixedPositions.length; i++) {
-                            let isFarEnough = true;
-                            for (const pos of this.quotePositions) {
-                                const posIndex = fixedPositions.indexOf(pos.y);
-                                if (posIndex !== -1 && Math.abs(i - posIndex) < 2) {
-                                    isFarEnough = false;
-                                    break;
-                                }
-                            }
-                            if (isFarEnough) {
-                                availableIndices.push(i);
-                            }
-                        }
-                    }
-                    
-                    if (availableIndices.length === 0) {
-                        availableIndices = Array.from({ length: fixedPositions.length }, (_, i) => i);
-                    }
-                    
-                    const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
-                    return { x, y: fixedPositions[randomIndex] };
-                }
+                const quoteHeight = isMobileDevice ? 45 : 50;
                 
                 const forbiddenZones = [
                     { x: screenW * 0.25, y: screenH * 0.25, w: screenW * 0.50, h: screenH * 0.30 },
@@ -2275,7 +2236,7 @@
                 
                 const isInForbiddenZone = (x, y) => {
                     for (const zone of forbiddenZones) {
-                        const margin = 30;
+                        const margin = 20;
                         if (x + margin < zone.x + zone.w && x + quoteWidth - margin > zone.x &&
                             y + margin < zone.y + zone.h && y + quoteHeight - margin > zone.y) {
                             return true;
@@ -2284,12 +2245,24 @@
                     return false;
                 };
                 
-                const preferredZones = [
-                    { x: padding, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
-                    { x: screenW * 0.60, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
-                    { x: padding, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 },
-                    { x: screenW * 0.60, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 }
-                ];
+                let preferredZones;
+                if (isMobileDevice) {
+                    preferredZones = [
+                        { x: padding, y: 20, w: screenW - padding * 2, h: quoteHeight },
+                        { x: padding, y: 70, w: screenW - padding * 2, h: quoteHeight },
+                        { x: padding, y: 120, w: screenW - padding * 2, h: quoteHeight },
+                        { x: padding, y: screenH - 180, w: screenW - padding * 2, h: quoteHeight },
+                        { x: padding, y: screenH - 130, w: screenW - padding * 2, h: quoteHeight },
+                        { x: padding, y: screenH - 80, w: screenW - padding * 2, h: quoteHeight }
+                    ];
+                } else {
+                    preferredZones = [
+                        { x: padding, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
+                        { x: screenW * 0.60, y: padding, w: screenW * 0.35, h: screenH * 0.35 },
+                        { x: padding, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 },
+                        { x: screenW * 0.60, y: screenH * 0.55, w: screenW * 0.35, h: screenH * 0.35 }
+                    ];
+                }
                 
                 const getPositionFromZone = (zone) => {
                     const availableWidth = Math.max(0, zone.w - quoteWidth);
@@ -2309,8 +2282,8 @@
                     if (isInForbiddenZone(x, y)) continue;
                     
                     let overlap = false;
-                    const minDistanceX = quoteWidth + 30;
-                    const minDistanceY = quoteHeight + 40;
+                    const minDistanceX = quoteWidth + 15;
+                    const minDistanceY = quoteHeight + 10;
                     
                     for (const pos of this.quotePositions) {
                         const dx = Math.abs(x - pos.x);
