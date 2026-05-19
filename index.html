@@ -2245,6 +2245,50 @@
                     return false;
                 };
                 
+                // 检查位置是否与已有的情话重叠
+                const checkOverlap = (x, y) => {
+                    const minDistanceX = quoteWidth + 15;
+                    const minDistanceY = quoteHeight + 10;
+                    
+                    for (const pos of this.quotePositions) {
+                        const dx = Math.abs(x - pos.x);
+                        const dy = Math.abs(y - pos.y);
+                        if (dx < minDistanceX && dy < minDistanceY) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                
+                // 手机端：优先使用固定的 Y 坐标位置
+                if (isMobileDevice) {
+                    const fixedYPositions = [20, 70, 120, screenH - 180, screenH - 130, screenH - 80];
+                    
+                    // 先找一个未被使用的固定 Y 位置
+                    for (const fixedY of fixedYPositions) {
+                        const x = padding;
+                        const y = fixedY;
+                        
+                        if (isInForbiddenZone(x, y)) continue;
+                        if (checkOverlap(x, y)) continue;
+                        
+                        return { x, y };
+                    }
+                    
+                    // 如果所有固定位置都被占用了，再尝试随机位置（但仍然避免重叠）
+                    for (let i = 0; i < maxAttempts; i++) {
+                        const randomY = fixedYPositions[Math.floor(Math.random() * fixedYPositions.length)];
+                        const x = padding;
+                        const y = randomY;
+                        
+                        if (isInForbiddenZone(x, y)) continue;
+                        if (checkOverlap(x, y)) continue;
+                        
+                        return { x, y };
+                    }
+                }
+                
+                // 电脑端：使用原来的逻辑
                 let preferredZones;
                 if (isMobileDevice) {
                     preferredZones = [
@@ -2266,24 +2310,13 @@
                 
                 const getPositionFromZone = (zone) => {
                     const availableWidth = Math.max(0, zone.w - quoteWidth);
-                    const availableHeight = Math.max(0, zone.h - quoteHeight);
                     return {
                         x: zone.x + (availableWidth > 0 ? Math.random() * availableWidth : 0),
-                        y: zone.y + (availableHeight > 0 ? Math.random() * availableHeight : 0)
+                        y: zone.y  // 手机端 Y 坐标固定，不随机化
                     };
                 };
                 
-                const usedYPositions = isMobileDevice ? [20, 70, 120, screenH - 180, screenH - 130, screenH - 80] : [];
-                
-                const isYPositionUsed = (y) => {
-                    for (const pos of this.quotePositions) {
-                        if (Math.abs(y - pos.y) < quoteHeight + 5) {
-                            return true;
-                        }
-                    }
-                    return false;
-                };
-                
+                // 电脑端或手机端回退逻辑
                 for (let i = 0; i < maxAttempts; i++) {
                     const zone = preferredZones[Math.floor(Math.random() * preferredZones.length)];
                     const pos = getPositionFromZone(zone);
@@ -2291,28 +2324,22 @@
                     const y = pos.y;
                     
                     if (isInForbiddenZone(x, y)) continue;
-                    if (isMobileDevice && isYPositionUsed(y)) continue;
+                    if (checkOverlap(x, y)) continue;
                     
-                    let overlap = false;
-                    const minDistanceX = quoteWidth + 15;
-                    const minDistanceY = quoteHeight + 10;
-                    
-                    for (const pos of this.quotePositions) {
-                        const dx = Math.abs(x - pos.x);
-                        const dy = Math.abs(y - pos.y);
-                        if (dx < minDistanceX && dy < minDistanceY) {
-                            overlap = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!overlap) {
-                        return { x, y };
+                    return { x, y };
+                }
+                
+                // 最后的回退：还是要检查重叠
+                for (let i = 0; i < maxAttempts; i++) {
+                    const zone = preferredZones[Math.floor(Math.random() * preferredZones.length)];
+                    const pos = getPositionFromZone(zone);
+                    if (!checkOverlap(pos.x, pos.y)) {
+                        return pos;
                     }
                 }
                 
-                const fallbackZone = preferredZones[Math.floor(Math.random() * preferredZones.length)];
-                return getPositionFromZone(fallbackZone);
+                // 如果实在找不到位置，返回第一个 zone 的位置
+                return getPositionFromZone(preferredZones[0]);
             }
             
             showLoveQuote(text) {
