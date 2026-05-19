@@ -563,18 +563,18 @@
         /* 移动端适配 */
         @media (max-width: 768px) {
             .carousel-container {
-                width: 150px;
-                height: 150px;
+                width: 165px;
+                height: 165px;
             }
             .carousel-item {
-                width: 100px;
-                height: 100px;
+                width: 110px;
+                height: 110px;
             }
-            .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(150px); }
-            .carousel-item:nth-child(2) { transform: rotateY(72deg) translateZ(150px); }
-            .carousel-item:nth-child(3) { transform: rotateY(144deg) translateZ(150px); }
-            .carousel-item:nth-child(4) { transform: rotateY(216deg) translateZ(150px); }
-            .carousel-item:nth-child(5) { transform: rotateY(288deg) translateZ(150px); }
+            .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(165px); }
+            .carousel-item:nth-child(2) { transform: rotateY(72deg) translateZ(165px); }
+            .carousel-item:nth-child(3) { transform: rotateY(144deg) translateZ(165px); }
+            .carousel-item:nth-child(4) { transform: rotateY(216deg) translateZ(165px); }
+            .carousel-item:nth-child(5) { transform: rotateY(288deg) translateZ(165px); }
         }
     </style>
 </head>
@@ -2229,9 +2229,9 @@
                 const quoteHeight = isMobileDevice ? 45 : 50;
                 
                 const forbiddenZones = [
-                    { x: screenW * 0.25, y: screenH * 0.25, w: screenW * 0.50, h: screenH * 0.30 },
+                    { x: screenW * 0.25, y: screenH * 0.30, w: screenW * 0.50, h: screenH * 0.25 },
                     { x: screenW * 0.30, y: screenH * 0.50, w: screenW * 0.40, h: screenH * 0.12 },
-                    { x: screenW * 0.15, y: screenH * 0.75, w: screenW * 0.70, h: screenH * 0.22 }
+                    { x: screenW * 0.15, y: screenH * 0.68, w: screenW * 0.70, h: screenH * 0.18 }
                 ];
                 
                 const isInForbiddenZone = (x, y) => {
@@ -2273,6 +2273,17 @@
                     };
                 };
                 
+                const usedYPositions = isMobileDevice ? [20, 70, 120, screenH - 180, screenH - 130, screenH - 80] : [];
+                
+                const isYPositionUsed = (y) => {
+                    for (const pos of this.quotePositions) {
+                        if (Math.abs(y - pos.y) < quoteHeight + 5) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                
                 for (let i = 0; i < maxAttempts; i++) {
                     const zone = preferredZones[Math.floor(Math.random() * preferredZones.length)];
                     const pos = getPositionFromZone(zone);
@@ -2280,6 +2291,7 @@
                     const y = pos.y;
                     
                     if (isInForbiddenZone(x, y)) continue;
+                    if (isMobileDevice && isYPositionUsed(y)) continue;
                     
                     let overlap = false;
                     const minDistanceX = quoteWidth + 15;
